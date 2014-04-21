@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Demo - Autocomplete</title>
+
+		<!-- Bootstrap -->
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+			<![endif]-->
+
+	</head>
+	<body>
+		<div class="container">
+			<h1>Demo Autocomplete</h1>
+			<form class="autocomplete" name="hola" onsubmit="return false;">
+
+			</form>
+		</div>
+	</body>
+	<script type='text/javascript' src='../../../bower_components/requirejs/require.js'></script>
+	<script type='text/javascript'>
+		steal(
+			'//dev/controls/autocomplete/autocomplete'
+		,	'//can/model/model.js'
+		).then(
+			function()
+			{
+				can.Model(
+					'Paises'
+				,	{
+						autocomplete: function(dataToSearch)
+						{
+							return	can.ajax(
+										{
+											type: 'POST'
+										,	data: dataToSearch
+										,	url: 'http://localhost:1337/paises/autocomplete'
+										}
+									)
+						}
+					}
+				,	{}
+				)
+
+				new Frame.Autocomplete(
+					can.$('.autocomplete') // [name="hola"]
+				,	{
+						// data: ['Argentina','Australia','Inglaterra']
+						data: Paises.autocomplete
+					}
+				)
+			}
+		)
+	</script>
+</html>
