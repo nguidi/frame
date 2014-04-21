@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Frame.Table</title>
+
+	</head>
+	<body>
+		<div id="table">
+			
+		</div>
+
+		<script data-main="../../config" src="../../bower_components/requirejs/require.js"></script>
+		<script>
+			require(
+				[
+					'controls/table/table'
+				]
+			,	function()
+				{
+					var tableData
+					=	[
+							{
+								id: 1
+							,	nombre: 'Neri'
+							,	apellido: 'Guidi'
+							}
+						,	{
+								id: 2
+							,	nombre: 'Luis'
+							,	apellido: 'Fabio'
+							}
+						]
+
+					new TableControl(
+						'#table'
+					,	{
+							view:	'views/table/init.mustache'
+						,	data:	tableData
+						}
+					)
+				}
+			)
+		</script>
+	</body>
+</html>
