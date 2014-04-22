@@ -1,7 +1,6 @@
 define(
 	[
 		'lib/util'
-	,	'lib/styles'
 	]
 ,	function()
 	{

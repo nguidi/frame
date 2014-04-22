@@ -1,16 +1,17 @@
-steal(
-	'dev/util.js'
-,	'dev/styles.js'
-,	'dev/controls/login/login.css'
-).then(
-	function()
+define(
+	[
+		'lib/util'
+	,	'can/util/string/deparam'
+	,	'localstorage'
+	]
+,	function()
 	{
 		can.Control(
 			'Frame.Login'
 		,	{
 				defaults:
 				{
-					view:	'dev/views/login/init.mustache'
+					view:	'views/login/login.mustache'
 				,	view_form: undefined
 				,	data:
 					{
@@ -51,7 +52,7 @@ steal(
 					can.append(
 						element
 					,	can.view(
-							steal.idToUri(options.view).path
+							options.view
 						,	options.data
 						)
 					)
@@ -68,46 +69,107 @@ steal(
 					*/
 				}
 
+			,	clearLogin: function()
+				{
+					this.element.find('.alert').remove()
+				}
+
+			,	addAlert: function(data)
+				{
+					var	$alert
+					=	can.$('<div>')
+
+					can.append(
+						$alert
+					,	can.view(
+							this.options.view_alert
+						,	data
+						)
+					)
+
+					$alert
+						.insertBefore(
+							this.element.find('.signin')
+						)
+				}
+
+			,	onSigninSuccess: function(data)
+				{
+					can.trigger(
+						this.element
+					,	'frame.login.signin.success'
+					,	data
+					)
+				}
+
+			,	onSigninError: function(data)
+				{
+					can.trigger(
+						this.element
+					,	'frame.login.signin.fail'
+					,	data.responseJSON || data
+					)
+
+					this
+						.addAlert(
+							data.responseJSON
+						)
+
+					can.trigger(
+						this.loginForm
+					,	'frame.form.fail'
+					)
+				}
+
+			,	'.close click': function(el,ev)
+				{
+					can.$(el)
+						.parents('.alert')
+							.remove()
+				}
+
 			,	'.signin click': function(el,ev)
 				{
+					this.clearLogin()
+
 					if	(!can.isFunction(this.options.onSignin))
-						console.log('Error onSignin - No se proporciono una funcion')
+						console.log('Error onSignin: No se proporciono una funcion')
 					else
 						//this.options.onSignin(this.loginForm.getData())
 						this.options.onSignin(can.deparam(this.element.find('form').serialize()))
 							.then(
 								//	Success Sign In
-								can.proxy(this.options.onSigninSuccess,this)
+								can.proxy(this.onSigninSuccess,this)
 								//	Failed Sign In
-							,	can.proxy(this.options.onSigninError,this)
+							,	can.proxy(this.onSigninError,this)
 							)
 				}
 
 			,	'.signup click': function(el,ev)
 				{
 					if	(!can.isFunction(this.options.onSignup))
-						console.log('Error onSignup - No se proporciono una funcion')
+						console.log('Error onSignup: No se proporciono una funcion')
 					else
 						this.options.onSignup()
 							.then(
 								//	Success Sign Up
-								can.proxy(this.options.onSignupSucess,this)
+								can.proxy(this.onSignupSucess,this)
 								//	Failed Sign Up
-							,	can.proxy(this.options.onSignupError,this)
+							,	can.proxy(this.onSignupError,this)
 							)	
 				}
 
 			,	'.signout click': function(el,ev)
 				{
 					if	(!can.isFunction(this.options.onSignup))
-						console.log('Error onSignout - No se proporciono una funcion')
+						console.log('Error onSignout: No se proporciono una funcion')
 					else
 						this.options.onSignout()
 							.then(
 								//	Success Sign Up
-								can.proxy(this.options.onSignoutSucess,this)
+								can.proxy(this.onSignoutSucess,this)
 								//	Failed Sign out
-							,	can.proxy(this.options.onSignoutError,this)
+							,	can.proxy(this.onSignoutError,this)
 							)	
 				}
 			}

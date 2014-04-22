@@ -14,6 +14,7 @@ require
 			,	can:		'bower_components/canjs/amd/can'
 			,	bootstrap:	'bower_components/bootstrap/dist'
 			,	fontawesome:'bower_components/fontawesome'
+			,	localstorage:'bower_components/canjs-localstorage/can.localstorage'
 			}
 		}
 	)

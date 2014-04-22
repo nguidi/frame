@@ -1,9 +1,6 @@
-steal(
-	'dev/util.js'
-,	'dev/styles.js'
-,	'can/route'
-).then(
-	function()
+define(
+	['common/base']
+,	function()
 	{
 		can.Control(
 			'Frame.Menu'
@@ -40,7 +37,7 @@ steal(
 					can.append(
 						element
 					,	can.view(
-							steal.idToUri(options.view).path
+							options.view
 						,	options.options
 						)
 					)
@@ -54,7 +51,7 @@ steal(
 					if	(can.isFunction(this['_render_'+optionName]))
 						this.updateStatus(optionName)
 					else
-						steal.dev.log('Error: Funcion '+'_render_'+optionName+' no definida.')
+						console.log('Error: Funcion '+'_render_'+optionName+' no definida.')
 				}
 
 			,	updateStatus: function(optionName)
