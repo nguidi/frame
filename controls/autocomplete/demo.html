@@ -23,29 +23,31 @@
 			</form>
 		</div>
 	</body>
-	<script type='text/javascript' src='../../../bower_components/requirejs/require.js'></script>
+
+
+	<script data-main="../../config" src="../../bower_components/requirejs/require.js"></script>
+
 	<script type='text/javascript'>
-		steal(
-			'//dev/controls/autocomplete/autocomplete'
-		,	'//can/model/model.js'
-		).then(
-			function()
+		require(
+
+			[
+				'controls/autocomplete/autocomplete'
+			,	'bower_components/canjs/amd/can/model'
+			]
+		
+		,	function()
 			{
-				can.Model(
-					'Paises'
-				,	{
-						autocomplete: function(dataToSearch)
-						{
-							return	can.ajax(
-										{
-											type: 'POST'
-										,	data: dataToSearch
-										,	url: 'http://localhost:1337/paises/autocomplete'
-										}
-									)
-						}
+				can.Model( 'Paises'	
+				, {
+					autocomplete: function(dataToSearch) {
+						return	can.ajax( {
+									type: 'POST'
+								,	data: dataToSearch
+								,	url: 'http://localhost:1337/paises/autocomplete'
+								})
 					}
-				,	{}
+				} 
+				,{}
 				)
 
 				new Frame.Autocomplete(

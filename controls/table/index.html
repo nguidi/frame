@@ -19,30 +19,61 @@
 					'controls/table/table'
 				,	'lib/styles'
 				]
-			,	function()
-				{
-					var tableData
-					=	[
-							{
-								id: 1
-							,	nombre: 'Neri'
-							,	apellido: 'Guidi'
-							}
-						,	{
-								id: 2
-							,	nombre: 'Luis'
-							,	apellido: 'Fabio'
-							}
+			,	function(){
+					require(
+						[
+							'can/util/fixture'
+						,	'can/model'
+						]
+				,	function(){
+
+						var tableData =	[
+							{id: 1,	nombre: 'Neri',	apellido: 'Guidi'},
+							{id: 2,	nombre: 'Luis',	apellido: 'Fabio'}
 						]
 
-					new TableControl(
-						'#table'
-					,	{
-							view:	'views/table/init.mustache'
-						,	data:	tableData
+
+						can.fixture("GET /recipes",
+							function(){
+								return [
+									{id: 3,	nombre: 'Juan',	apellido: 'Perez'},
+									{id: 4,	nombre: 'Pedro', apellido: 'Gomez'},
+							  	]
+						})
+
+						can.fixture("POST /recipes",
+							function(request, response){
+								return can.grep(tableData, function(a){return a.id == request.data})
+							})
+
+						can.Model( 'TableModel'	, {
+							aDeferred: function() {
+								return can.ajax( {
+										type: 'GET',
+										url: '/recipes'
+									} )
+							}
+
+						,	filter: function(tableFilter) {
+							return can.ajax( {
+									type: 'POST'
+								,	data: tableFilter
+								,	url: '/recipes'
+							} ) 
 						}
-					)
-				}
+						} ,{}
+						)
+
+
+						new TableControl( '#table'
+						,	{
+								view_filter: 'views/table/filter.mustache', 
+								view_table:	'views/table/init.mustache'
+							,	data: 	TableModel
+							}
+						)
+					}
+				)}
 			)
 		</script>
 	</body>

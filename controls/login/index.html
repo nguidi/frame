@@ -28,72 +28,55 @@
 					'controls/login/login'
 				,	'lib/styles'
 				]
-			,	function()
-				{
+			,	function() {
 					require(
 						[
 							'can/util/fixture'
 						,	'can/model'
 						]
-					,	function()
-						{
-							can.fixture(
-								"POST /signin"
-							,	function(req,res)
-								{
-									var	userdata
-									=	req.data
-									,	user
-									=	{
+					,	function() {
+							
+							can.fixture( "POST /signin"
+							,	function( req, res) {
+									var	userdata =	req.data
+									,	user = {
 											username: 'nguidi'
 										,	password: 123456
 										}
 
 									if	(user.username == userdata.username)
 										if	(user.password == userdata.password)
-											res(
-												200
-											,	user
-											)
+												res( 200, user)
+											else
+												res( 404, "{msg: 'Wrong password'}")
 										else
-											res(
-												404
-											,	"{msg: 'Wrong password'}"
-											)
-									else
-										res(
-											404
-										,	"{msg: 'User not found'}"
-										)
+											res( 404 , "{msg: 'User not found'}")
 								}
 							)
 
-							can.Model(
-								'Users'
-							,	{
-									signin: function(formData)
-									{
-										return	can.ajax(
-													{
-														url: '/signin'
-													,	type:'POST'
-													,	data: formData
-													}
-												)
-									}
+							can.Model( 'Users',	{
+								signin: function(formData) {
+									return	can.ajax( {
+													url: '/signin'
+												,	type:'POST'
+												,	data: formData
+												}
+									)
 								}
-							,	{	}
+							}
+							,{}
 							)
 						}
 					)
 
 					new Frame.Login(
-						can.$('body')
-					,	{
+						can.$('body'), {
 							view:	'views/login/login.mustache'
 						,	view_alert: 'views/login/alert.mustache'
-						,	onSignin:	function(formData){ return Users.signin(formData).always(function(){console.log(arguments)}) }
+						,	onSignin:	function(formData){ 
+								return Users.signin(formData).always(function(){console.log(arguments)}) }
 						}
+
 					)
 				}
 			)
