@@ -124,7 +124,7 @@ define(
 					modal.element.data('modal',modal)		//	seteo el objeto del modal en el html para leerlo mas tarde.
 
 					new	Draggabilly(						//	Permite que el modal se lo pueda arrastrar por la pantalla (Drag).
-						modal.element[0]					//	El Draggabilly no utiliza jQuery asi que el selector de jquery no funciona con el
+						modal.element.find('.modal-dialog')[0]					//	El Draggabilly no utiliza jQuery asi que el selector de jquery no funciona con el
 					,	{									//	Al hacer modal.element[0] devuelvo el elemento puro (http://draggabilly.desandro.com/)
 							containment: 'body'				//	El contenedor de donde no se puede escapar al se drageado
 						,	handle: '.modal-header'			//	De donde se puede agarrar el modal para arrastrarlo
@@ -142,6 +142,7 @@ define(
 								,	'overflow':		'auto'
 								,	'position':		'fixed'
 								,	'width':		'100%'
+								,	'height':		'100%'
 								}
 							)
 
