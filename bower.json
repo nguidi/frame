@@ -8,6 +8,7 @@
     "jquery": "~2.1.0",
     "require-css": "~0.1.2",
     "fontawesome": "~4.0.3",
-    "canjs-localstorage": "~0.2.0"
+    "canjs-localstorage": "~0.2.0",
+    "draggabilly": "~1.1.0"
   }
 }
