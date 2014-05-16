@@ -1,127 +1,110 @@
-steal(
-	'//dev/util.js'
-,	'//dev/styles.js'
-).then(
-	function()
+define(
+	[
+		'lib/util'
+	,	'typeahead'
+	]
+,	function()
 	{
+		/*
+			@nombre
+			Frame.Autocomplete
+			
+			@descripción
+
+			Manejo de un Autocomplete, Utiliza un plugin externo. typeahead.js
+			
+			@utilización
+
+			Se debe instanciar el controlador en un input.
+		*/
+
 		can.Control(
 			'Frame.Autocomplete'
 		,	{
 				defaults:
 				{
-					view: '//dev/views/autocomplete/init.mustache'
-				,	view_data:
-					{
-						input_name: 'autocomplete'
-					,	button_label: 'Buscar!'
-					}
+				//	source:	@tipo Array|Deferred|Function	@descripcion	Fuente de donde extraer la informacion
+					source:				[]
+				//	resto:	ver https://github.com/bassjobsen/Bootstrap-3-Typeahead
+				,	items:				8
+				,	minLength:			3
+				,	showHintOnFocus:	true
+				,	scrollHeight:		0	
+				,	matcher:			undefined
+				,	sorter:				undefined
+				,	updater:			undefined
+				,	highlight:			true
+				,	autoSelect:			true
+				,	delay:				250
 				}
 			}
 		,	{
 				init: function()
 				{
-					can.append(
-						this.element
-					,	can.view(
-							this.options.view
-						,	this.options.view_data
-						)
-					)
+					//	Valida si source es un deferred, si asi lo debera resolver primero
+					if	(can.isDeferred(this.options.source))
+						this._render_deferred()
+					else
+						this._render_autocomplete()
 				}
-
-			,	show: function(list)
+			//	Como source es un deferred, lo resuelve
+			,	_render_deferred: function()
 				{
-					var	$menu
+					var	self
 					=	this
-							.element
-								.find('ul.dropdown-menu')
-					
-					$menu
-						.empty()
-
-					can.each(
-						list
-					,	function(value,index)
-						{
-							can.append(
-								$menu
-							,	can.$('<li>')
-									.text(
-										value
-									)
-							)
-						}
-					)
-
-					$menu
-						.show()
-				}
-
-			,	hide: function()
-				{
+					//	Resuelve el deferred
 					this
-						.element
-							.find('ul.dropdown-menu')
-								.hide()
-				}
-
-			,	search: function(toSearch)
-				{
-					if	(can.isArray(this.options.data))	{
-						var	list
-						=	(toSearch.length == 0)
-							?	[]
-							:	can.grep(
-									this.options.data
-								,	function(value,index)
+						.options
+							.source
+								.then(
+									function(data)
 									{
-										return	value.toLowerCase().indexOf(toSearch.toLowerCase()) != -1
+										//	Realiza un backup del source original
+										self.source = this.options.source
+										//	Actualiza el valor de source
+										self.options.source = data
+										//	Renderiza el autocomplete
+										self._render_autocomplete()
 									}
 								)
-						
-						if	(list.length == 0)
-							this.hide()
-						else
-							this.show(list)
-					}	else
-						this.searchAsync(toSearch)
 				}
-
-			,	searchAsync: function(toSearch)
+			//	Crea la instancia del autocomplete en el input
+			,	_render_autocomplete: function()
 				{
-					if	(can.isFunction(this.options.data))
-						this.options.data(toSearch)
-							.then(
-								can.proxy(this.show,this)
-							,	can.proxy(this.hide,this)
+					//	Instancia el autocomplete de Bootstrap-3-Typeahead.js (https://github.com/bassjobsen/Bootstrap-3-Typeahead) 
+					this
+						.element
+							.typeahead(
+								//	Extiende los parametros por defecto con source
+								can.extend(
+									//	La funcion pick de lodash (http://lodash.com/docs) crea un objeto partiendo de options y selecciona solo los atributos dentro del array
+									_.pick(
+										this.options
+									,	['items','minLength','showHintOnFocus','scrollHeight','matcher','sorter','updater','highlight','autoSelect']
+									)
+								,	{
+										//	Obtengo la fuente (data o funcion)
+										source:	this.getSource()
+									}
+								)
 							)
 				}
-
-			,	validate: function(toSearch)
+			//	Valida si source es una funcion y genera la nueva funcion on query y callback 
+			,	getSource: function()
 				{
-					if	(toSearch.length >= 3)
-						this.search(toSearch)
+					return	can.isFunction(this.options.source)
+							?	can.proxy(this.getSourceFunction,this)
+							:	this.options.source
 				}
-
-			,	'input.autocomplete keyup': function(input,event)
+			//	Nueva funcion con query y callback tal cual como la espera el plugin typeahead.js
+			,	getSourceFunction: function(query,callback)
 				{
-					switch(event.keyCode)
-					{
-						case 13:
-							//	Aprete Enter
-							this.search(can.$(input).val())
-							break;
-
-						case 8:
-							//	borre
-							this.search(can.$(input).val())
-							break;
-
-						default:
-							//	de forma contraria
-							this.validate(can.$(input).val())
-							break;
-					}
+					return	this
+								.options
+									.source(query)
+										.then(
+											callback
+										)
 				}
 			}
 		)

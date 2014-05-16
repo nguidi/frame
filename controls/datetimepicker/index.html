@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Frame.DateTimePicker</title>
+
+	</head>
+	<body style="height: 100%">
+		<div class="container">
+			<form>
+				<div class="form-group">
+					<label for="fecha" class="col-sm-2 control-label">
+						Fecha
+					</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="fecha">
+					</div>
+				</div>
+			</form>
+		</div>
+		<script data-main="../../config" src="../../bower_components/requirejs/require.js"></script>
+		<script>
+			require(
+				[
+					'controls/datetimepicker/datetimepicker'
+				,	'lib/styles'
+				]
+			,	function()
+				{
+
+					new	Frame.DateTimePicker(
+						can.$('input[name=fecha]')
+					,	{}
+					)
+
+				}
+			)
+		</script>
+	</body>
+</html>

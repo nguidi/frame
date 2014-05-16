@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Frame.Form</title>
+
+	</head>
+	<body style="height: 100%">
+		<div class="container">
+			<h1>Frame.Form</h1>
+			<p>Pequeña demo de como funcionan los forms.</p>
+			<div class="row">
+				<div class="col-md-12" style="margin-bottom:30px;">
+					<legend>
+						Form Inline Demo
+					</legend>
+					<div id="inline-form-demo">
+					</div>
+				</div>
+				<div class="col-md-6">
+					<legend>
+						Form Horizontal
+					</legend>
+					<div id="horizontal-form-demo">
+					</div>
+				</div>
+				<div class="col-md-6">
+					<legend>
+						Form Simple Demo
+					</legend>
+					<div id="simple-form-demo">
+					</div>
+				</div>
+			</div>
+		</div>
+		<script data-main="../../config" src="../../bower_components/requirejs/require.js"></script>
+		<script>
+			require(
+				[
+					'controls/form/form'
+				,	'lib/styles'
+				]
+			,	function()
+				{
+					var	paises
+					=	["Andorra","United Arab Emirates","Afghanistan","Antigua and Barbuda","Anguilla","Albania","Armenia","Angola","Antarctica","Argentina","American Samoa","Austria","Australia","Aruba","Åland","Azerbaijan","Bosnia and Herzegovina","Barbados","Bangladesh","Belgium","Burkina Faso","Bulgaria","Bahrain","Burundi","Benin","Saint Barthélemy","Bermuda","Brunei","Bolivia","Bonaire","Brazil","Bahamas","Bhutan","Bouvet Island","Botswana","Belarus","Belize","Canada","Cocos [Keeling] Islands","Congo","Central African Republic","Republic of the Congo","Switzerland","Ivory Coast","Cook Islands","Chile","Cameroon","China","Colombia","Costa Rica","Cuba","Cape Verde","Curacao","Christmas Island","Cyprus","Czechia","Germany","Djibouti","Denmark","Dominica","Dominican Republic","Algeria","Ecuador","Estonia","Egypt","Western Sahara","Eritrea","Spain","Ethiopia","Finland","Fiji","Falkland Islands","Micronesia","Faroe Islands","France","Gabon","United Kingdom","Grenada","Georgia","French Guiana","Guernsey","Ghana","Gibraltar","Greenland","Gambia","Guinea","Guadeloupe","Equatorial Guinea","Greece","South Georgia and the South Sandwich Islands","Guatemala","Guam","Guinea-Bissau","Guyana","Hong Kong","Heard Island and McDonald Islands","Honduras","Croatia","Haiti","Hungary","Indonesia","Ireland","Israel","Isle of Man","India","British Indian Ocean Territory","Iraq","Iran","Iceland","Italy","Jersey","Jamaica","Jordan","Japan","Kenya","Kyrgyzstan","Cambodia","Kiribati","Comoros","Saint Kitts and Nevis","North Korea","South Korea","Kuwait","Cayman Islands","Kazakhstan","Laos","Lebanon","Saint Lucia","Liechtenstein","Sri Lanka","Liberia","Lesotho","Lithuania","Luxembourg","Latvia","Libya","Morocco","Monaco","Moldova","Montenegro","Saint Martin","Madagascar","Marshall Islands","Macedonia","Mali","Myanmar [Burma]","Mongolia","Macao","Northern Mariana Islands","Martinique","Mauritania","Montserrat","Malta","Mauritius","Maldives","Malawi","Mexico","Malaysia","Mozambique","Namibia","New Caledonia","Niger","Norfolk Island","Nigeria","Nicaragua","Netherlands","Norway","Nepal","Nauru","Niue","New Zealand","Oman","Panama","Peru","French Polynesia","Papua New Guinea","Philippines","Pakistan","Poland","Saint Pierre and Miquelon","Pitcairn Islands","Puerto Rico","Palestine","Portugal","Palau","Paraguay","Qatar","Réunion","Romania","Serbia","Russia","Rwanda","Saudi Arabia","Solomon Islands","Seychelles","Sudan","Sweden","Singapore","Saint Helena","Slovenia","Svalbard and Jan Mayen","Slovakia","Sierra Leone","San Marino","Senegal","Somalia","Suriname","South Sudan","São Tomé and Príncipe","El Salvador","Sint Maarten","Syria","Swaziland","Turks and Caicos Islands","Chad","French Southern Territories","Togo","Thailand","Tajikistan","Tokelau","East Timor","Turkmenistan","Tunisia","Tonga","Turkey","Trinidad and Tobago","Tuvalu","Taiwan","Tanzania","Ukraine","Uganda","U.S. Minor Outlying Islands","United States","Uruguay","Uzbekistan","Vatican City","Saint Vincent and the Grenadines","Venezuela","British Virgin Islands","U.S. Virgin Islands","Vietnam","Vanuatu","Wallis and Futuna","Samoa","Kosovo","Yemen","Mayotte","South Africa","Zambia","Zimbabwe"]
+
+					new	Frame.Form(
+						'#inline-form-demo'
+					,	{
+							type: 'inline'
+						,	data:
+							[
+								{
+									type: 'text'
+								,	name: 'nombre'
+								,	label:'Nombre'
+								}
+							,	{
+									type: 'checkbox'
+								,	multiple: true
+								,	options:
+									[
+										{	
+											name: 'si'
+										,	label: 'Si'
+										,	value: true
+										}
+									,	{	
+											name: 'no'
+										,	label: 'No'
+										,	value: true
+										}
+									]
+								}
+							,	{
+									type: 'radio'
+								,	name: 'uno'
+								,	label: 'Uno?'
+								,	options:
+									[
+										{	
+											label: 'Si'
+										}
+									,	{	
+											label: 'No'
+										}
+									]
+								}
+							,	{
+									type: 'select'
+								,	name: 'pais'
+								,	label: 'Seleccione un Pais'
+								,	options:
+									[
+										{
+											value: 1
+										,	label: 'Argentina'
+										}
+									,	{
+											value: 2
+										,	label: 'Chile'
+										}
+									]
+								}
+							,	{
+									type: 'autocomplete'
+								,	name: 'paisAuto'
+								,	label: 'Pais'
+								,	source: paises
+								}
+							,	{
+									type: 'date'
+								,	name: 'fecha'
+								,	label: 'Fecha'
+								}
+							,	{
+									type: 'textarea'
+								,	name: 'descripcion'
+								,	label: 'Descripcion'
+								}
+							]
+						}
+					)
+
+					new	Frame.Form(
+						'#horizontal-form-demo'
+					,	{
+							type: 'horizontal'
+						,	data:
+							[
+								{
+									type: 'text'
+								,	name: 'nombre'
+								,	label:'Nombre'
+								}
+							,	{
+									type: 'checkbox'
+								,	multiple: true
+								,	label: 'Consume?'
+								,	options:
+									[
+										{	
+											name: 'si'
+										,	label: 'Si'
+										}
+									,	{	
+											name: 'no'
+										,	label: 'No'
+										}
+									]
+								}
+							,	{
+									type: 'radio'
+								,	name: 'uno'
+								,	label: 'Uno?'
+								,	options:
+									[
+										{	
+											label: 'Si'
+										}
+									,	{	
+											label: 'No'
+										}
+									]
+								}
+							,	{
+									type: 'select'
+								,	name: 'pais'
+								,	label: 'Pais'
+								,	placeholder: 'Seleccione un Pais'
+								,	multiple: true
+								,	options:
+									[
+										{
+											value: 1
+										,	label: 'Argentina'
+										}
+									,	{
+											value: 2
+										,	label: 'Chile'
+										}
+									]
+								}
+							,	{
+									type: 'autocomplete'
+								,	name: 'paisAuto'
+								,	label: 'Pais'
+								,	source: paises
+								}
+							,	{
+									type: 'date'
+								,	name: 'fecha'
+								,	label: 'Fecha'
+								}
+							,	{
+									type: 'textarea'
+								,	name: 'descripcion'
+								,	label: 'Descripcion'
+								}
+							]
+						}
+					)
+
+					new	Frame.Form(
+						'#simple-form-demo'
+					,	{
+							data:
+							[
+								{
+									type: 'text'
+								,	name: 'nombre'
+								,	label:'Nombre'
+								}
+							,	{
+									type: 'checkbox'
+								,	multiple: true
+								,	label: 'Uno? Ambos? o Ninguno?'
+								,	options:
+									[
+										{	
+											name: 'si'
+										,	label: 'Si'
+										}
+									,	{	
+											name: 'no'
+										,	label: 'No'
+										}
+									]
+								}
+							,	{
+									type: 'radio'
+								,	name: 'uno'
+								,	label: 'Uno?'
+								,	options:
+									[
+										{	
+											label: 'Si'
+										}
+									,	{	
+											label: 'No'
+										}
+									]
+								}
+							,	{
+									type: 'select'
+								,	name: 'pais'
+								,	label: 'Pais'
+								,	placeholder: 'Seleccione un Pais'
+								,	options:
+									[
+										{
+											value: 1
+										,	label: 'Argentina'
+										}
+									,	{
+											value: 2
+										,	label: 'Chile'
+										}
+									]
+								}
+							,	{
+									type: 'autocomplete'
+								,	name: 'paisAuto'
+								,	label: 'Pais'
+								,	source: paises
+								}
+							,	{
+									type: 'date'
+								,	name: 'fecha'
+								,	label: 'Fecha'
+								}
+							,	{
+									type: 'textarea'
+								,	name: 'descripcion'
+								,	label: 'Descripcion'
+								}
+							]
+						}
+					)
+				}
+			)
+		</script>
+	</body>
+</html>
