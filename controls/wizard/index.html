@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Wizard</title>
+
+	</head>
+	<body>
+
+		<button type="button" class="btn btn-default btnback">back</button>
+		<button type="button" class="btn btn-default btnnext">next</button>
+
+		<script data-main="../../config" src="../../bower_components/requirejs/require.js"></script>
+		<script>
+			require(
+				[
+					'controls/wizard/wizard'
+				,	'lib/styles'
+				]
+			,	function()
+				{
+											
+					new Frame.Wizard(
+						can.$('body') 
+						, 	{
+								view:	'views/wizard/wizard.mustache',
+								data: 	{ wizard_title: 'Paso 1' },
+								key: 'A',
+								initial: true
+							}
+
+						)
+				}
+			)
+		</script>
+	</body>
+</html>

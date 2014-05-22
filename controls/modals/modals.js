@@ -67,8 +67,11 @@ define(
 
 			,	removeModal: function(ev,modals,index)	//	Ev (Evento "add"), modal (elemento removido de la lista), index (posicion que ocupaba).
 				{
-					modals[0].element.remove()			//	Pregunto por modals[0], porque devuelve un array con los elmentos removidos. Elimino el modal
 
+					for( var x = 0; x < modals.length; x++) {
+						modals[x].element.remove()		//	Pregunto por modals[0], porque devuelve un array con los elmentos removidos. Elimino el modal
+					}
+	
 					if	(index == 0)					//	Verifico que el modal ocupaba la primera posicion, si es asi, es el unico, por ende, elimino el bg.
 						this.$modal_bg.remove()
 					else
@@ -208,6 +211,14 @@ define(
 
 					if	(can.isFunction(modal.options.onConfirm))	//	Verifico si tengo seteado una funcion onConfirm y si es asi la llamo.
 						modal.options.onConfirm(modal.element,modal.data)
+				}
+
+			,	'.app-modal .close-all click': function(el,ev){
+					this.vaciarModal()
+				}
+
+			,	vaciarModal: function(){
+					this.modalsLIFO.splice(0)
 				}
 
 			,	'frame.modal.new': function(el,ev,options)	//	el (Lugar donde se disparo el evento), ev (el evento), options (parametros del nuevo modal)

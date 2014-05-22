@@ -15,6 +15,7 @@ require
 			,	'bootstrap':			'bower_components/bootstrap/dist'
 			,	'fontawesome':			'bower_components/fontawesome'
 			,	'localstorage':			'bower_components/canjs-localstorage/can.localstorage'
+			,	'bootstrap-growl':		'bower_components/remarkable-bootstrap-growl/bootstrap-growl'
 			,	'draggabilly':			'bower_components/draggabilly/draggabilly'
 			//	Start Draggabilly Dependencies
 			,	'classie':				'bower_components/classie'
@@ -26,8 +27,9 @@ require
 			}
 		,	shim:
 			{
-				'can':			['jquery']
-			,	'bootstrap':	['jquery']
+				'can':				['jquery']
+			,	'bootstrap':		['jquery']
+			,	'bootstrap-growl':	['jquery']
 			}
 		}
 	)
