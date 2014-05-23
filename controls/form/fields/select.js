@@ -146,7 +146,7 @@ define(
 							)
 					//	Renderizo el placeholder
 					if	(this.options.placeholder)
-						this._render_option({value: 'placeholder', label: this.options.placeholder})
+						this._render_option({label: this.options.placeholder})
 					//	Verifico si options.options es un deferred o un array y llamo a _render_options
 					if	(can.isDeferred(this.options.options))
 						this

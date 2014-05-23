@@ -82,36 +82,36 @@ define(
 					//	Si tengo n radio llamo a render n veces (n > 1).
 					can.each(
 						this.options.options
-					,	function(radio)
+					,	function(radio,index)
 						{
-							self._render_radio($where,radio)
+							self._render_radio($where,radio,index)
 						}
 					)
 				}
 				//	Renderiza el radio, obtiene como parametro donde voy a renderizarlo y de forma opcional radio.
-			,	_render_radio: function($where,radio)
+			,	_render_radio: function($where,radio,index)
 				{
 					//	Renderizo el Label del radio
-					this._render_label($where,radio)
+					var	$label
+					=	this._render_label($where,radio,index)
 					//	Inserto el radio en el label que corresponde
-					$where
-						.find('label[for='+this.options.name+']')
+					$label
 						.addClass('radio-inline')
 							.prepend(
-								this._render_field(radio || this.options)
+								this._render_field(radio)
 							)
 				}
 				//	Renderiza el Label, obtiene como parametro donde voy a renderizarlo  y de forma opcional radio.
-			,	_render_label: function($where,radio)
+			,	_render_label: function($where,radio,index)
 				{
 					//	Creo el elemento HTML del label y lo inserto dentro del elemento pasado como argumento.
-					//	Como el parametro radio es opcional, verifico si esta.
-					can.$('<label>')
-						.html(radio ? radio.label : this.options.label)
-						.attr('for',this.options.name)
-						.appendTo(
-							$where
-						)
+					//	Retorno el label.
+					return	can.$('<label>')
+								.html(radio.label)
+								.attr('for',this.options.name+'['+index+']')
+								.appendTo(
+									$where
+								)
 				}
 				//	Renderiza el Input, obtiene como parametro el radio a renderizar
 			,	_render_field: function(radio)
@@ -122,10 +122,10 @@ define(
 								.attr(
 									can.extend(
 										{
-											type: 'radio'
-										,	name: this.options.name
-										,	value:	radio.value
-										,	checked:	radio.checked 
+											type:		'radio'
+										,	value:		radio.value
+										,	checked:	radio.checked
+										,	name:		this.options.name
 										}
 									,	(radio.id)			//	Valido que tenga ID, si tiene paso un objeto con ID y sino un objeto vacio
 										?	{

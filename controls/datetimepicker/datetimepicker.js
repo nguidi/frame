@@ -1,8 +1,8 @@
 define(
 	[
 		'lib/util'
-	,	'datetimepicker/build/js/bootstrap-datetimepicker.min'
-	,	'css!datetimepicker/build/css/bootstrap-datetimepicker.min'
+	,	'datetimepicker/js/bootstrap-datetimepicker.min'
+	,	'css!datetimepicker/css/bootstrap-datetimepicker.min'
 	,	'time-locale-es'
 	]
 ,	function()
@@ -81,6 +81,28 @@ define(
 									]
 								)
 							)
+				}
+				/*
+				$('#datetimePicker')
+			        .on('dp.change dp.show', function(e) {
+			            // Validate the date when user change it
+			            $('#meetingForm')
+			                // Get the bootstrapValidator instance
+			                .data('bootstrapValidator')
+			                // Mark the field as not validated, so it'll be re-validated when the user change date
+			                .updateStatus('meeting', 'NOT_VALIDATED', null)
+			                // Validate the field
+			                .validateField('meeting');
+			        })
+				*/
+
+			,	' dp.change': function()
+				{
+					can.trigger(
+						this.element
+					,	'form.field.validate'
+					,	this.options.name
+					)
 				}
 			}
 		)

@@ -12,6 +12,8 @@
     "draggabilly": "~1.1.0",
     "lodash": "~2.4.1",
     "typeahead": "https://github.com/bassjobsen/Bootstrap-3-Typeahead.git",
-    "bootstrap3-datetimepicker": "~3.0.0"
+    "bootstrap3-datetimepicker": "~3.0.0",
+    "bootstrapValidator": "~0.4.5",
+    "iCheck": "~1.0.2"
   }
 }

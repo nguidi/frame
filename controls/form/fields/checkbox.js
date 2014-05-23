@@ -78,7 +78,7 @@ define(
 				{
 					//	Verifico si tiene label, si tiene creo un label con grid, sino solo un div con grid.
 					var	$leftControl
-					=	(this.options.multiple && this.options.label)
+					=	(this.options.label)
 						?	can.$('<label>').html(this.options.label)
 						:	can.$('<div>')
 					//	Le agrego las clases correspondiente y lo inserto en el HTML
@@ -94,44 +94,39 @@ define(
 					//	Seteo a this en la variable global self para poder usarla dentro del can.each
 					var	self
 					=	this
-					//	Verifico si es un checkbox multiple
-					if	(this.options.multiple)
-						//	Si tengo n checkobx llamo a render n veces (n > 1).
-						can.each(
-							this.options.options
-						,	function(checkbox)
-							{
-								self._render_checkbox($where,checkbox)
-							}
-						)
-					else
-						//	Renderizo el input dentro del label
-						this._render_checkbox(self.element)
+					//	Si tengo n checkobx llamo a render n veces (n > 1).
+					can.each(
+						this.options.options
+					,	function(checkbox,index)
+						{
+							self._render_checkbox($where,checkbox,index)
+						}
+					)
 				}
 				//	Renderiza el checkbox, obtiene como parametro donde voy a renderizarlo y de forma opcional checkbox.
-			,	_render_checkbox: function($where,checkbox)
+			,	_render_checkbox: function($where,checkbox,index)
 				{
 					//	Renderizo el Label del Checkbox
-					this._render_label($where,checkbox)
+					var	$label
+					=	this._render_label($where,checkbox,index)
 					//	Inserto el checkbox en el label que corresponde
-					$where
-						.find('label[for='+checkbox.name+']')
+					$label
 						.addClass('checkbox-inline')
 							.prepend(
-								this._render_input(checkbox || this.options)
+								this._render_input(checkbox,index)
 							)
 				}
 				//	Renderiza el Label, obtiene como parametro donde voy a renderizarlo  y de forma opcional checkbox.
-			,	_render_label: function($where,checkbox)
+			,	_render_label: function($where,checkbox,index)
 				{
 					//	Creo el elemento HTML del label y lo inserto dentro del elemento pasado como argumento.
-					//	Como el parametro checkbox es opcional, verifico si esta.
-					can.$('<label>')
-						.html(checkbox ? checkbox.label : this.options.label)
-						.attr('for',checkbox ?  checkbox.name : this.options.name)
-						.appendTo(
-							$where
-						)
+					//	Retorno el label
+					return	can.$('<label>')
+								.html(checkbox.label)
+								.attr('for',this.options.name+'[]')
+								.appendTo(
+									$where
+								)
 				}
 				//	Renderiza el Input, obtiene como parametro el checkbox a renderizar
 			,	_render_input: function(checkbox)
@@ -143,9 +138,9 @@ define(
 									can.extend(
 										{
 											type:	this.getType()
-										,	name:	checkbox.name
 										,	value:	checkbox.value
 										,	checked:	checkbox.checked 
+										,	name:	this.options.name+'[]'
 										}
 									,	(checkbox.id)			//	Valido que tenga ID, si tiene paso un objeto con ID y sino un objeto vacio
 										?	{
