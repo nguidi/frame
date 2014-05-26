@@ -8,9 +8,27 @@
 
 	</head>
 	<body>
+		<div class="container">
+			<h1>Wizard Demo</h1>
+			<div id="wizard"></div>
+		</div>
+		<script id="pas1" type="text/mustache">
+			<h1>Pas 1!</h1>
+			<button type="button" class="btn btn-default jump-next">habilitar siguiente paso</button>
+		</script>
+		<script id="pas2" type="text/mustache">
+			<h1>Pas 2!</h1>
+			<button type="button" class="btn btn-default jump-next">habilitar siguiente paso</button>
+			<button type="button" class="btn btn-default jump-final">habilitar paso final</button>
+		</script>
+		<script id="pas25" type="text/mustache">
+			<h1>Pas 2.5!</h1>
+			<button type="button" class="btn btn-default jump-next">habilitar siguiente paso</button>
+		</script>
+		<script id="pas3" type="text/mustache">
+			<h1>Pas 3!</h1>
+		</script>
 
-		<button type="button" class="btn btn-default btnback">back</button>
-		<button type="button" class="btn btn-default btnnext">next</button>
 
 		<script data-main="../../config" src="../../bower_components/requirejs/require.js"></script>
 		<script>
@@ -21,14 +39,72 @@
 				]
 			,	function()
 				{
-											
+					can.Control(
+						'paso'
+					,	{
+							defaults:
+							{
+								next: undefined
+							,	final: undefined
+							}
+						}
+					,	{
+							init:function()
+							{
+								can.append(this.element,can.view(this.options.view))
+							}	
+
+						,	'.jump-next click': function()
+							{
+								can.trigger(
+									this.element
+								,	'frame.wizard.next'
+								,	this.options.next
+								)
+							}
+						,	'.jump-final click': function()
+							{
+								can.trigger(
+									this.element
+								,	'frame.wizard.next'
+								,	this.options.last
+								)
+							}
+						}
+					)	
+					paso('paso1', { defaults: { view: '#pas1', next: 'paso2'}}, {})
+					paso('paso2', { defaults: { view: '#pas2', next: 'paso25', last: 'paso3'}}, {})
+					paso('paso25', { defaults: { view: '#pas25', next: 'paso3'}}, {})
+					paso('paso3', { defaults: { view: '#pas3'}}, {})								
+					
 					new Frame.Wizard(
-						can.$('body') 
+						can.$('#wizard') 
 						, 	{
 								view:	'views/wizard/wizard.mustache',
-								data: 	{ wizard_title: 'Paso 1' },
-								key: 'A',
-								initial: true
+								steps: [
+									{
+										initial: true
+									,	title: 'Paso 1'
+									,	control: paso1
+									,	key: 'paso1'
+									},
+									{
+										title: 'Paso 2'
+									,	control: paso2	
+									,	key: 'paso2'
+									},
+									{
+										title: 'Paso 2.5'
+									,	control: paso25	
+									,	key: 'paso25'
+									},
+									{
+										final: true
+									,	title: 'Paso 3'
+									,	control: paso3
+									,	key: 'paso3'
+									}
+								]
 							}
 
 						)
