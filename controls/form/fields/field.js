@@ -80,6 +80,8 @@ define(
 					this.options.placeholder = this.options.placeholder || this.options.label
 					//	Renderizo el input dentro del elemento
 					this._render_field(this.element)
+					//	Renderizo los addons
+					this._render_addons(this.element)
 				}
 				//	Crea la estructura HTML para el tipo de formulario Horizontal
 			,	_render_horizontal: function()
@@ -101,6 +103,8 @@ define(
 							)
 					//	Renderizo el Input dentro del elemento HTML creado
 					this._render_field($innerGroup)
+					//	Renderizo los addons
+					this._render_addons($innerGroup)
 				}
 				//	Crea la estructura HTML para el tipo de formulario en caso de que no sea horizontal o inline.
 			,	_render_simple: function()
@@ -109,6 +113,8 @@ define(
 					this._render_label(this.element)
 					//	Renderizo el Input dentro del elemento
 					this._render_field(this.element)
+					//	Renderizo los addons
+					this._render_addons(this.element)
 				}
 				//	Renderiza el Label, obtiene como parametro donde voy a renderizarlo.
 			,	_render_label: function($where)

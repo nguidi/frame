@@ -10,6 +10,7 @@ define(
 	,	'controls/form/fields/date'
 	,	'controls/form/fields/textarea'
 	,	'controls/form/fields/button'
+	,	'controls/form/fields/input_group'
 	//	Bootstrap Form Validator
 	,	'validator/js/bootstrapValidator'
 	,	'css!validator/css/bootstrapValidator'
@@ -225,7 +226,7 @@ define(
 				//	Ejemplo, si field.type = 'text' debe de existir el controlador Frame.Fields.Text 
 			,	getFieldFunction: function(field)
 				{
-					return	eval('Frame.Fields.'+can.capitalize(field.type.toLowerCase()))
+					return	eval('Frame.Fields.'+can.capitalize(field.type.toLowerCase()).replace(/-/g,'_'))
 				}
 				//	Actualiza la informacion del campo
 			,	fieldRendered: function(fieldName,$element)
