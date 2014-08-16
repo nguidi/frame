@@ -95,30 +95,33 @@ define(
 
 			,	onSigninSuccess: function(data)
 				{
-					can.trigger(
-						this.element
-					,	'frame.login.signin.success'
-					,	data
-					)
+					this
+						.element
+							.trigger(
+								'frame.login.signin.success'
+							,	data
+							)
 				}
 
 			,	onSigninError: function(data)
 				{
-					can.trigger(
-						this.element
-					,	'frame.login.signin.fail'
-					,	data.responseJSON || data
-					)
+					this
+						.element
+							.trigger(
+								'frame.login.signin.fail'
+							,	data.responseJSON || data
+							)
 
 					this
 						.addAlert(
 							data.responseJSON
 						)
 
-					can.trigger(
-						this.loginForm
-					,	'frame.form.fail'
-					)
+					this
+						.element
+							.trigger(
+								'frame.form.fail'
+							)
 				}
 
 			,	'.close click': function(el,ev)

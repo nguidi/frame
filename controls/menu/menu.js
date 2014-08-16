@@ -1,5 +1,8 @@
 define(
-	['common/base']
+	[
+		'lib/util'
+	,	'can/route'
+	]
 ,	function()
 	{
 		can.Control(
@@ -21,63 +24,91 @@ define(
 						}
 					,	...
 					]
-				//	Selector para buscar el contenido
-				,	contentSelector: // SELECTOR
 				*/
-				//	Se habilita o no el cambio de HASH
-					enableHash: true
-				//	Template de la ruta del HASH
-				,	routeTemplate: ':option'
-				,	routeAttr: 'option'
+					options:		[]
+				,	route:			false
+				,	default_option:	false
+				,	event_prefix:	'menu'
 				}
 			}
 		,	{
 				init: function(element,options)
 				{
+					this.menuOptions
+					=	new can.Map(options.options)
+
 					can.append(
 						element
 					,	can.view(
 							options.view
-						,	options.options
+						,	this.menuOptions
 						)
 					)
+
+					if	(options.route)
+						can
+							.route
+								.bind(
+									options.route
+								, 	can.proxy(this._render_content,this)
+								)
+
+					if	(options.default_option)
+						this.updateHash(options.default_option)
 				}
 
-			,	'li > .option click': function(el,ev)
+			,	_render_content: function(routeObject,newRoute,oldRoute)
 				{
-					var	optionName
-					=	can.$(el).attr('name')
-
-					if	(can.isFunction(this['_render_'+optionName]))
-						this.updateStatus(optionName)
-					else
-						console.log('Error: Funcion '+'_render_'+optionName+' no definida.')
+					this
+						.element
+							.trigger(
+								this.options.event_prefix+'.'+newRoute
+							)
 				}
 
-			,	updateStatus: function(optionName)
+			,	updateControlData: function(data)
 				{
-					if	(this.options.enableHash)
-						this.updateHash(optionName)
-					else
-						this.updateContent(optionName)
+					if	(!_.isEmpty(data.default_option))
+						this.updateHash(data.default_option)
 				}
 
-			,	updateHash: function(optionName)
+			,	updateHash: function(routeKey)
 				{
-					can.route.attr(option,optionName)
+					can
+						.route
+							.attr(
+								this.options.route
+							,	routeKey
+							)
+
+					this.activateLI(routeKey)
 				}
 
-			,	updateContent: function(optionName)
+			,	activateLI: function(key)
 				{
-					var	$content
-					=	this.element.find(this.options.contentSelector)
-					
-					this['_render_'+optionName]($content)
+					if	(!_.isEmpty(this.$active))
+						this.$active.removeClass('active')
+
+					this.$active
+					=	this.element.find('li a[menu-key='+key+']').parent()
+
+					this.$active.addClass('active')
 				}
 
-			,	'{routeTemplate} route': function(data)
+			,	'li:not(".active") a click': function(el,ev)
 				{
-					this['_render_'+optionName]($content)
+					if	(!_.isEmpty(can.$(el).attr('menu-key')))
+						this.updateHash(can.$(el).attr('menu-key'))
+				}
+
+			,	'frame.menu.update': function(el,ev,data)
+				{
+					this
+						.menuOptions
+							.attr(data.viewData)
+
+					if	(!_.isEmpty(data.controlData))
+						this.updateControlData(data.controlData)
 				}
 			}
 		)
