@@ -50,7 +50,7 @@ define(
 		,	{
 				init: function(element,options)
 				{
-					//	Creo una variable dentro del controlador con las opciones del menu
+					//	Creo un objeto observable dentro del controlador con las opciones del menu
 					this.menuOptions
 					=	new can.Map(options.options)
 					//	Inserto el menu en element y le paso el observable de sus opciones (El objetivo es poder actualizar las opciones)
@@ -82,8 +82,9 @@ define(
 				//	Renderiza el contenido (Lanza un evento para que se renderize)
 			,	_render_content: function(routeObject,newRoute,oldRoute)
 				{
-					//	Activa el LI
-					this.activateLI(newRoute)
+					//	Activa el LI si es que no esta denegado para esta routa
+					if	(!_.include(this.options.prevent,newRoute))
+						this.activateLI(newRoute)
 					//	Vacia el contenido
 					this.$content.empty()
 					//	Triggea el evento usando el prefijo + el nombre de la nueva ruta
@@ -103,12 +104,15 @@ define(
 			,	updateHash: function(routeKey)
 				{
 					//	Cambia el hash por la nueva ruta
-					can
-						.route
-							.attr(
-								this.options.route
-							,	routeKey
-							)
+					if	(_.include(this.options.prevent,routeKey))
+						this._render_content(can.route.attr(),routeKey,undefined)
+					else
+						can
+							.route
+								.attr(
+									this.options.route
+								,	routeKey
+								)
 				}
 				//	Activa el LI
 			,	activateLI: function(key)

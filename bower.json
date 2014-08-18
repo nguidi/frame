@@ -14,6 +14,7 @@
     "typeahead": "https://github.com/bassjobsen/Bootstrap-3-Typeahead.git",
     "bootstrap3-datetimepicker": "~3.0.0",
     "bootstrapValidator": "~0.4.5",
-    "iCheck": "~1.0.2"
+    "iCheck": "~1.0.2",
+    "bootstrap.growl": "~2.0.0"
   }
 }

@@ -35,6 +35,7 @@ require
 			//	END
 			,	'validator':			'bower_components/bootstrapValidator/dist'
 			,	'iCheck':				'bower_components/iCheck'
+			,	'growl':				'bower_components/bootstrap.growl/bootstrap-growl.min'
 			}
 			//	Carga de modulos no-amd. Bootstrap y plugins de jQuery.
 		,	shim:
@@ -133,6 +134,18 @@ require
 				{
 					deps:	['jquery']
 				,	exports:'$.fn.datetimepicker'
+				}
+				//	Bootstrap 3 Growl Notifications
+			,	'bootstrap.growl/bootstrap-growl.min':
+				{
+					deps:	['jquery']
+				,	exports:'$.growl'
+				}
+			//	Bootstrap 3 Growl Notifications
+			,	'bootstrap.growl/bootstrap-growl.min':
+				{
+					deps:	['jquery']
+				,	exports:'$.growl'
 				}
 			}
 		}
