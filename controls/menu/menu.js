@@ -61,12 +61,8 @@ define(
 						,	this.menuOptions
 						)
 					)
-					//	Interto un DIV vacio que me va a servir como contenido
-					this.$content
-					=	can.$('<div>')
-							.appendTo(
-								element
-							)
+					//	Creo el container y seteo el handler
+					this.setHandler(options.contentHandler,options.handlerOptions)
 					//	Si pase una ruta, bindeo el cambio de la misma
 					if	(options.route)
 						can
@@ -79,6 +75,28 @@ define(
 					if	(options.default_option)
 						this.updateHash(options.default_option)
 				}
+			,	setHandler: function(handler,handlerOptions)
+				{
+					//	Interto un DIV vacio que me va a servir como contenido
+					this.$container
+					=	can.$('<div>')
+							.appendTo(
+								this.element
+							)
+					//	Si tengo un handler lo instancio
+					if	(!_.isEmpty(handler))
+						new	handler(
+							this.$container
+						,	handlerOptions	||	{}
+						)
+					
+				}
+			,	updateHandler: function(handler,handlerOptions)
+				{
+					this.$container.remove()
+
+					this.setHandler(handler,handlerOptions)
+				}
 				//	Renderiza el contenido (Lanza un evento para que se renderize)
 			,	_render_content: function(routeObject,newRoute,oldRoute)
 				{
@@ -86,13 +104,18 @@ define(
 					if	(!_.include(this.options.prevent,newRoute))
 						this.activateLI(newRoute)
 					//	Vacia el contenido
-					this.$content.empty()
-					//	Triggea el evento usando el prefijo + el nombre de la nueva ruta
-					this
-						.$content
-							.trigger(
-								this.options.event_prefix+'.'+newRoute
+					this.$container.empty()
+					//	Creo el content
+					var	$content
+					=	can.$('<div>')
+							.appendTo(
+								this.$container
 							)
+					//	Triggea el evento usando el prefijo + el nombre de la nueva ruta
+					$content
+						.trigger(
+							this.options.event_prefix+'.'+newRoute
+						)
 				}
 				//	Actualiza las opciones del menu
 			,	updateControlData: function(data)
@@ -136,10 +159,23 @@ define(
 				//	Evento que espera para actualizar las opciones del Menu
 			,	'frame.menu.update': function(el,ev,data)
 				{
+					if	(!_.isEmpty(data.contentHandler))
+						this.updateHandler(data.contentHandler,data.handlerOptions)
 					//	Actualiza el observable con las nuevas opciones
 					this
 						.menuOptions
-							.attr(data.viewData)
+							.attr(
+								_.omit(
+									data.viewData
+								,	'options'
+								)
+							)
+					//	Actualiza la lista de opciones
+					if	(_.isArray(data.viewData.options))
+						this
+							.menuOptions
+								.options
+									.replace(data.viewData.options)
 					//	Actualiza los opciones del controlador con la nueva data
 					if	(!_.isEmpty(data.controlData))
 						this.updateControlData(data.controlData)
