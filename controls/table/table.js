@@ -21,93 +21,234 @@ define(
 		,	{
 				defaults:
 				{
+				//	Vista de la tabla
 					view:		false
-				,	data:		[]
-				,	filter:		undefined
-				,	pagination:	undefined
+				//	Modelo asociado a la tabla
+				,	model:		undefined
+				//	Configuracion del paginador
+				,	pagination:
+					{
+						limit:	5
+					,	skip:	0
+					}
+				//	Sort por defecto
+				,	sort:		undefined
+				//	Funcion a llamar antes de obtener los registros
+				,	beforeSend:	undefined
+				//	Booleano que determina si voy a autocompletar la tabla con datos la primera vez que inicie
+				,	autoFill:	true
+				//	Mensaje de error por defecto
+				,	defaultErrorMsg:	'Ocurrio un error. <br> Intente nuevamente.'
 				}
 			}
 		,	{
+			//	Inicializo la tabla
 				init: function(element,options)
 				{
-					//	Agrego la clase panel a la tabla
-					element
-						.addClass('panel panel-default')
-					//	Creo un objeto observable que contendra los datos de la Tabla (Obtengo bindeos al modificar este objeto)
+					//	Configuraciones de la instancia del controlador
+					//	Configuro el limite de registros por pagina				
+					this.tableLimit
+					=	options.pagination.limit
+					//	Configuro la cantidad de registros a omitir
+					this.tableSkip
+					=	options.pagination.skip
+					//	Configuro el sort que tendran los registros
+					this.tableSort
+					=	options.sort
+					//	Configuro una lista vacia que se van a mostrar
 					this.tableData
-					=	new can.Map({count: 1, data: []})
-					//	Creo los elementos HTML que contendran el filtro, la tabla y el paginador
-					//	Verifico si tiene filtro
-					if	(!_.isUndefined(this.options.filter))
-						this.$filterContent
-						=	can.$('<div>')
-								.addClass('panel-heading')
-								.appendTo(this.element)
-					//	Inserto el contenedor de la tabla
-					this.$tableContent
-					=	can.$('<div>')
-							.addClass('panel-body')
-							.appendTo(this.element)
-					//	Verifico si tiene paginador
-					if	(!_.isUndefined(this.options.pagination))
-						this.$paginationContent
-						=	can.$('<div>')
-								.addClass('panel-footer')
-								.appendTo(this.element)
-					//	Renderizo el Filtro
-					this._render_filter()
-					//	Renderizo la Tabla
-					this._render_table()
-					//	Renderizo el Paginador
-					this._render_pagination()
-				}
-			//	Renderizo el Filtro
-			,	_render_filter: function()
-				{
-					//	Instancio el filtro
-					new Frame.Filter(
-						this.$filterContent
-					,	this.options.filter
-					)
-				}
-			//	Renderizo la Tabla
-			,	_render_table: function()
-				{
-					//	Agrego la Tabla
+					=	new	can.Map({records: []})
+					//	Inserto la tabla (puede tener de forma opcional un formulario para busquedas)
 					can.append(
-						this.$tableContent
+						element
 					,	can.view(
-							this.options.view
+							options.view
 						,	this.tableData
 						)
 					)
+					//	Si se desea que se rellene por defecto remplazo la lista vacia por registros
+					if	(options.autoFill)
+						this.getRecords()
 				}
-			//	Renderizo el Paginador
-			,	_render_pagination: function()
+			//	Obtiene los registros
+			,	getRecords: function(callback)
 				{
-					//	Instancio el paginador
-					new	Frame.Pagination(
-						this.$paginationContent
-					,	can.extend(
-							this.options.pagination
-						,	{
-								count:	this.tableData.attr('count')
-							}
-						)
-					)
+					this
+						.options
+							.model
+								.findAll(
+									{
+										where:	this.getQuery()
+									,	limit:	this.tableLimit
+									,	skip:	this.tableSkip
+									,	sort:	this.tableSort
+									}
+								).then(
+									can.proxy(this.updateTable,this)
+								,	can.proxy(this.notifyError,this)
+								).always(
+									callback
+								)
 				}
-			//	Actualizo la data de la tabla
-			,	updateData: function(count,data)
+			/*
+				Obtiene la query a enviar
+
+				Verbo a utilizar			Equivalencia en SQL
+				
+				'lessThan'				=>	'<' 
+				'lessThanOrEqual'		=>	'<='
+				'greaterThan'			=>	'>'
+				'greaterThanOrEqual'	=>	'>=' 
+				'not'					=>	'!'
+				'like'					=>	'%'	
+				'contains'				=>	'%L%'	
+				'startsWith'			=>	'L%'
+				'endsWith'				=>	'%L'	
+			*/
+			,	getQuery: function()
 				{
-					//	Actualizo el objeto observable
+					var	$form
+					=	this.element.find('form')
+					//	Recorro los atributos del formulario
+					return	_.mapValues(
+								can.getFormData(
+									$form
+								)
+							,	function(value,key)
+								{
+									//	Busco el campo
+									var	$field
+									=	$form.find('[name='+key+']')
+									//	Devuelvo la query para el atributo.
+									/*
+										Ejemplos:
+											si attr-query = ""		->	valorCampo
+											Si attr-query = "not"	->	{ not: valorCampo}
+									*/ 
+									return	_.isEmpty($field.attr('attr-query'))
+											?	value
+											:	_.object(
+													[$field.attr('attr-query')]
+												,	[value]
+												)
+								}
+							)
+
+				}
+			//	Actualizo la tabla
+			,	updateTable: function(data)
+				{
+					//	Remplazo los registros de la tabla por los nuevos registros
 					this
 						.tableData
 							.attr(
-								{
-									count:	count
-								,	data:	data
-								}
+								'records'
+							,	data
 							)
+				}
+			//	Si ocurrio un error lo notifico
+			,	notifyError: function()
+				{
+					//	Triggeo un evento para que el notify muestre un mensaje de error
+					this
+						.element
+							.trigger(
+								'frame.notify.danger'
+							,	this.options.defaultErrorMsg
+							)
+				}
+			//	Invierte el tipo de sort (HORRIBLE)
+			,	inverseSortI: function($i)
+				{
+					//	Si es alfanumerico
+					if	($i.hasClass('fa-sort-alpha-asc'))
+						$i
+							.removeClass('fa-sort-alpha-asc')
+							.addClass('fa-sort-alpha-desc')
+					else
+						if	($i.hasClass('fa-sort-alpha-desc'))
+							$i
+								.removeClass('fa-sort-alpha-desc')
+								.addClass('fa-sort-alpha-asc')
+					//	Si es de cantidad
+					if	($i.hasClass('fa-sort-amount-asc'))
+						$i
+							.removeClass('fa-sort-amount-asc')
+							.addClass('fa-sort-amount-desc')
+					else
+						if	($i.hasClass('fa-sort-amount-desc'))
+							$i
+								.removeClass('fa-sort-amount-desc')
+								.addClass('fa-sort-amount-asc')
+					//	Si es numerico
+					if	($i.hasClass('fa-sort-numeric-asc'))
+						$i
+							.removeClass('fa-sort-numeric-asc')
+							.addClass('fa-sort-numeric-desc')
+					else
+						if	($i.hasClass('fa-sort-numeric-desc'))
+							$i
+								.removeClass('fa-sort-numeric-desc')
+								.addClass('fa-sort-numeric-asc')
+					//	Si es generico
+					if	($i.hasClass('fa-sort-asc'))
+						$i
+							.removeClass('fa-sort-asc')
+							.addClass('fa-sort-desc')
+					else
+						if	($i.hasClass('fa-sort-desc'))
+							$i
+								.removeClass('fa-sort-desc')
+								.addClass('fa-sort-asc')
+				}
+			//	Si apreto algun boton de sort
+			,	'table thead th .sort-table click': function(el,ev)
+				{
+					//	Obtengo el orden de sort (Por defecto DESC)
+					var	sortOrder
+					=	can.$(el).attr('class').indexOf("asc") > -1
+						?	"ASC"
+						:	"DESC"
+					//	Obtengo el nombre del atributo a ordenar
+					,	attrName
+					=	can.$(el).parent('th').attr('attr-name')
+					//	Invierto la imagen del SORT
+					this.inverseSortI(can.$(el))
+					//	Actualizo el sort
+					this.tableSort
+					=	attrName+' '+sortOrder
+					//	Actualizo la tabla con el nuevo orden
+					this.getRecords()
+				}
+			//	Si cambio la paginacion
+			,	'frame.pagination.change': function(el,ev,data)
+				{
+					//	Actualizo la configuracion del limite de registros a obtener
+					this.tableLimit
+					=	data.itemPerPage
+					//	Actualizo la configuracion de la cantidad de registros a omitir
+					this.tableSkip
+					=	(data.page - 1)*data.itemPerPage
+					//	Obtengo los registros
+					this
+						.getRecords()
+				}
+			//	Si se aperto el boton de buscar nuevos registros
+			,	'button.search-records click': function(el,ev)
+				{
+					//	Pongo el boton en modo loading
+					can.$(el)
+						.button('loading')
+					//	Busco los nuevos registros y pongo un callback para resetear el boton de buscar
+					this
+						.getRecords(
+							function()
+							{
+								//	Reseteo el boton de buscar
+								can.$(el)
+									.button('reset')								
+							}
+						)
 				}
 			}
 		)
