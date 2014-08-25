@@ -1,6 +1,8 @@
 define(
 	[
 		'lib/util'
+	//	Cargo el paginador
+	,	'controls/pagination/pagination'
 	]
 ,	function()
 	{
@@ -23,13 +25,16 @@ define(
 				{
 				//	Vista de la tabla
 					view:		false
+				//	Vista del paginador
+				,	view_pagination:	'views/pagination/pagiantion.mustache'
 				//	Modelo asociado a la tabla
 				,	model:		undefined
 				//	Configuracion del paginador
 				,	pagination:
 					{
-						limit:	5
-					,	skip:	0
+						limit:		5
+					,	skip:		0
+					,	maxIdenx:	5
 					}
 				//	Sort por defecto
 				,	sort:		undefined
@@ -57,7 +62,7 @@ define(
 					=	options.sort
 					//	Configuro una lista vacia que se van a mostrar
 					this.tableData
-					=	new	can.Map({records: []})
+					=	new	can.Map()
 					//	Inserto la tabla (puede tener de forma opcional un formulario para busquedas)
 					can.append(
 						element
@@ -66,13 +71,7 @@ define(
 						,	this.tableData
 						)
 					)
-					//	Si se desea que se rellene por defecto remplazo la lista vacia por registros
-					if	(options.autoFill)
-						this.getRecords()
-				}
-			//	Obtiene los registros
-			,	getRecords: function(callback)
-				{
+					//	Obtengo los registros
 					this
 						.options
 							.model
@@ -84,11 +83,49 @@ define(
 									,	sort:	this.tableSort
 									}
 								).then(
-									can.proxy(this.updateTable,this)
-								,	can.proxy(this.notifyError,this)
-								).always(
-									callback
+									can.proxy(this.setInitialData,this)
 								)
+				}
+
+			,	setInitialData: function(response)
+				{
+					//	Agrego el paginador
+					this.paginationControl
+					=	new	Frame.Pagination(
+							this.element
+						,	{
+							//	Limite de items por pagina (por defecto 5)
+								limit:		this.options.pagination.limit
+							//	Cantidad de items a paginar (por defecto 0)
+							,	count:		response.count
+							//	Cantidad de indices a mostrar (por defecto 5)
+							,	maxIndex:	this.options.pagination.maxIndex
+							//	Vista del paginador
+							,	view:		this.options.view_pagination
+							}
+						)
+					//	Agrego los registros a la tabla
+					this.updateTable(response)
+				}
+			//	Obtiene los registros
+			,	getRecords: function(callback)
+				{
+					return	this
+								.options
+									.model
+										.findAll(
+											{
+												where:	this.getQuery()
+											,	limit:	this.tableLimit
+											,	skip:	this.tableSkip
+											,	sort:	this.tableSort
+											}
+										).then(
+											can.proxy(this.updateTable,this)
+										,	can.proxy(this.notifyError,this)
+										).always(
+											callback
+										)
 				}
 			/*
 				Obtiene la query a enviar
@@ -108,7 +145,7 @@ define(
 			,	getQuery: function()
 				{
 					var	$form
-					=	this.element.find('form')
+					=	this.element.find('form#searchItems')
 					//	Recorro los atributos del formulario
 					return	_.mapValues(
 								can.getFormData(
@@ -136,14 +173,25 @@ define(
 
 				}
 			//	Actualizo la tabla
-			,	updateTable: function(data)
+			,	updateTable: function(response)
 				{
 					//	Remplazo los registros de la tabla por los nuevos registros
 					this
 						.tableData
 							.attr(
-								'records'
-							,	data
+								response
+							)
+					//	Aviso que se actualizo la tabla
+					this
+						.element
+							.trigger(
+								'frame.table.updated'
+							,	_.extend(
+									response
+								,	{
+										limit:	this.tableLimit
+									}
+								)
 							)
 				}
 			//	Si ocurrio un error lo notifico
@@ -225,10 +273,10 @@ define(
 				{
 					//	Actualizo la configuracion del limite de registros a obtener
 					this.tableLimit
-					=	data.itemPerPage
+					=	data.limit
 					//	Actualizo la configuracion de la cantidad de registros a omitir
 					this.tableSkip
-					=	(data.page - 1)*data.itemPerPage
+					=	(data.page - 1)*data.limit
 					//	Obtengo los registros
 					this
 						.getRecords()
