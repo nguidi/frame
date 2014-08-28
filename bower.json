@@ -15,6 +15,7 @@
     "bootstrap3-datetimepicker": "~3.0.0",
     "bootstrapValidator": "~0.5.1",
     "iCheck": "~1.0.2",
-    "bootstrap.growl": "~2.0.0"
+    "bootstrap.growl": "~2.0.0",
+    "bootstrap-application-wizard": "*"
   }
 }
