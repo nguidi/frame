@@ -1,21 +1,10 @@
 {
-  "name": "frame",
+  "name": "Frame",
   "version": "0.0.1",
   "dependencies": {
-    "canjs": "~2.1.2",
-    "bootstrap": "~3.1.1",
-    "requirejs": "~2.1.11",
-    "jquery": "~2.1.0",
-    "require-css": "~0.1.2",
-    "fontawesome": "~4.0.3",
-    "canjs-localstorage": "~0.2.0",
-    "draggabilly": "~1.1.0",
-    "lodash": "~2.4.1",
-    "typeahead": "https://github.com/bassjobsen/Bootstrap-3-Typeahead.git",
-    "bootstrap3-datetimepicker": "~3.0.0",
-    "bootstrapValidator": "~0.5.1",
-    "iCheck": "~1.0.2",
-    "bootstrap.growl": "~2.0.0",
-    "bootstrap-application-wizard": "*"
+    "canjs": "~2.1.4",
+    "steal": "~0.4.0",
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.3.1"
   }
 }
