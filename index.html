@@ -14,7 +14,64 @@
 		<![endif]-->
 		
 	</head>
-	<body>
+	<body data-spy="scroll" data-target="#main-navbar">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8">
+					<div id="typeahead.js">
+						<div class="page-header">
+							<h1>Typeahead <small>Frame.Typeahead.js</small></h1>
+						</div>
+						<p>Plugin para gestionar campos predictivos.</p>
+						<form class="form-horizontal" role="form" onsubmit="return false;">
+							<div class="col-md-4">
+								<legend>Array de Strings</legend>
+								<div class="form-group">
+									<label for="paisArray" class="col-sm-2 control-label">
+										Pais
+									</label>
+									<div class="col-sm-10">
+										<input type="text" name="paisArray" class="form-control">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<legend>Array de Objetos</legend>
+								<div class="form-group">
+									<label for="paisObjectArray" class="col-sm-2 control-label">
+										Pais
+									</label>
+									<div class="col-sm-10">
+										<input type="text"  name="paisObjectArray" class="form-control">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<legend>Deferred (AJAX)</legend>
+								<div class="form-group">
+									<label for="paisArray" class="col-sm-2 control-label">
+										Pais
+									</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control">
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<ul id="main-navbar" class="nav nav-pills nav-stacked">
+						<li>
+							<a href="#typeahead.js">
+								Typeahead.js
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		
+		</div>
 	</body>
-	<script src='./bower_components/steal/steal.production.js' data-main='frame'></script>
+	<script src='./bower_components/steal/steal.js' data-main='frame'></script>
 </html>

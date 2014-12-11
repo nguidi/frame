@@ -1,8 +1,11 @@
 import	'jquery'
 import	'bootstrap/js/bootstrap'
 import	'bootstrap/css/bootstrap.css!'
+import	'lib/typeahead'
 
-$(document.body)
-	.append(
-		'<h1>Hola Mundo!</h1>'
+$('[name=paisArray]')
+	.typeahead(
+		{
+			source:	['Argentina', 'Brasil', 'Canada', 'Dinamarca', 'Etopia', 'Francia']
+		}
 	)
